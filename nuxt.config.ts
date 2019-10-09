@@ -1,6 +1,8 @@
+import { Configuration } from '@nuxt/types'
 
-export default {
+const config: Configuration = {
   mode: 'spa',
+  buildModules: ['@nuxt/typescript-build'],
   /*
   ** Headers of the page
   */
@@ -27,8 +29,7 @@ export default {
   /*
   ** Plugins to load before mounting the App
   */
-  plugins: [
-  ],
+  plugins: ['@/plugins/composition-api'],
   /*
   ** Nuxt.js dev-modules
   */
@@ -42,11 +43,22 @@ export default {
   /*
   ** Build configuration
   */
+
   build: {
-    /*
-    ** You can extend webpack config here
-    */
-    extend(config, ctx) {
-    }
-  }
+    babel: {
+      presets({ isServer }) {
+        return [
+          [require.resolve('babel-preset-vca-jsx')],
+          [
+            require.resolve('@nuxt/babel-preset-app'),
+            {
+              targets: isServer ? { node: 'current' } : { ie: '9' },
+            },
+          ],
+        ]
+      },
+    },
+  },
 }
+
+export default config
